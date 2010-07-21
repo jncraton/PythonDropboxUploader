@@ -1,11 +1,6 @@
 #!/usr/bin/python
 
 import mechanize
-import os
-from datetime import date
-
-email = 'email'
-password = 'pass'
 
 def isLoginForm(form):
     if(form.action == "https://www.dropbox.com/login"):
@@ -20,32 +15,28 @@ def isUploadForm(form):
         return False
 
 def uploadFile(local_file,remote_dir,remote_file,email,password):
-    print("Connecting to Dropbox server...")
+    """ Upload a local file to Dropbox """
     
+    # Fire up a browser using mechanize
     br = mechanize.Browser()
-    br.open('https://www.dropbox.com/login')
-    br.select_form(predicate=isLoginForm)
     
-    print("Found login form...")
-    print("Sending username and password...")
+    # Browse to the login page
+    br.open('https://www.dropbox.com/login')
+    
+    # Enter the username and password into the login form
+    br.select_form(predicate=isLoginForm)
     
     br["login_email"] = email
     br["login_password"] = password
     
+    # Send the form 
     response = br.submit()
     
-    print("Looking for upload form...")
-    
+    # Add our file upload to the upload form once logged in
     br.select_form(predicate=isUploadForm)
-    
-    print("Uploading the file...")
-    
     br.form.find_control("dest").readonly = False
     br.form.set_value(remote_dir,"dest")
     br.form.add_file(open(local_file),"",remote_file)
     
-    print(br.form)
-    
+    # Submit the form with the file
     br.submit()
-    
-    print("File uploaded successfully!")
