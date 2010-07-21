@@ -1,17 +1,5 @@
 import mechanize
 
-def isLoginForm(form):
-    if(form.action == "https://www.dropbox.com/login"):
-        return True
-    else:                                   
-        return False
-        
-def isUploadForm(form):
-    if(form.action == "https://dl-web.dropbox.com/upload"):
-        return True
-    else:
-        return False
-
 def upload_file(local_file,remote_dir,remote_file,email,password):
     """ Upload a local file to Dropbox """
     
@@ -22,6 +10,7 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
     br.open('https://www.dropbox.com/login')
     
     # Enter the username and password into the login form
+    isLoginForm = lambda f: f.action == "https://www.dropbox.com/login"
     br.select_form(predicate=isLoginForm)
     
     br["login_email"] = email
@@ -31,6 +20,7 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
     response = br.submit()
     
     # Add our file upload to the upload form once logged in
+    isUploadForm = lambda f: f.action == "https://dl-web.dropbox.com/upload"
     br.select_form(predicate=isUploadForm)
     br.form.find_control("dest").readonly = False
     br.form.set_value(remote_dir,"dest")
