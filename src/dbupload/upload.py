@@ -36,7 +36,7 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
         
     br.form.find_control("dest").readonly = False
     br.form.set_value(remote_dir,"dest")
-    br.form.add_file(open(local_file),"",remote_file)
+    br.form.add_file(open(local_file,"rb"),"",remote_file)
     
     # Submit the form with the file
     br.submit()
