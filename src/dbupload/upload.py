@@ -1,7 +1,7 @@
 import mechanize
 
-def upload_file(local_file,remote_dir,remote_file,email,password):
-    """ Upload a local file to Dropbox """
+def login(email,password):
+    """ Login to Dropbox and return mechanize browser instance """
     
     # Fire up a browser using mechanize
     br = mechanize.Browser()
@@ -23,6 +23,13 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
     # Send the form
     response = br.submit()
     
+    return br
+
+def upload_file(local_file,remote_dir,remote_file,email,password):
+    """ Upload a local file to Dropbox """
+    
+    br = login(email, password)
+
     # Add our file upload to the upload form once logged in
     isUploadForm = lambda u: u.action == "https://dl-web.dropbox.com/upload" and u.method == "POST"
 
