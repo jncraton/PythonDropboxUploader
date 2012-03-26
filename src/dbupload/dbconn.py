@@ -1,17 +1,22 @@
 import mechanize
+import urllib2
+import re
 
 class DropboxConnection:
     """ Creates a connection to Dropbox """
     
     email = ""
     password = ""
+    root_ns = ""
+    token = ""
     browser = None
     
     def __init__(self,email,password):
         self.email = email
         self.password = password
         
-        self.browser = self.login()
+        self.login()
+        self.get_constants()
 
     def login(self):
         """ Login to Dropbox and return mechanize browser instance """
@@ -37,13 +42,24 @@ class DropboxConnection:
         # Send the form
         response = self.browser.submit()
         
-        return self.browser
+    def get_constants(self):
+        """ Load constants from page """
+        
+        home_src = self.browser.open('https://www.dropbox.com/home').read()
+        
+        try:
+            root_ns = re.findall(r"root_ns: (\d+)", home_src)[0]
+            token = re.findall(r"TOKEN: '(.+)'", home_src)[0]
+        except:
+            raise(Exception("Unable to find constants for AJAX requests"))
 
-    def upload_file(self,local_file,remote_dir,remote_file,email,password):
+    def upload_file(self,local_file,remote_dir,remote_file):
         """ Upload a local file to Dropbox """
         
-        if(is_logged_in()):
+        if(not self.is_logged_in()):
             raise(Exception("Can't upload when not logged in"))
+            
+        self.browser.open('https://www.dropbox.com/')
     
         # Add our file upload to the upload form
         isUploadForm = lambda u: u.action == "https://dl-web.dropbox.com/upload" and u.method == "POST"
@@ -59,8 +75,9 @@ class DropboxConnection:
         
         # Submit the form with the file
         self.browser.submit()
-
+        
     def is_logged_in(self):
+        """ Checks if a login has been established """
         if(self.browser):
             return True
         else:
