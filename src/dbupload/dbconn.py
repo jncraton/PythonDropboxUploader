@@ -1,6 +1,7 @@
 import mechanize
 import urllib2
 import re
+import json
 
 class DropboxConnection:
     """ Creates a connection to Dropbox """
@@ -48,8 +49,8 @@ class DropboxConnection:
         home_src = self.browser.open('https://www.dropbox.com/home').read()
         
         try:
-            root_ns = re.findall(r"root_ns: (\d+)", home_src)[0]
-            token = re.findall(r"TOKEN: '(.+)'", home_src)[0]
+            self.root_ns = re.findall(r"root_ns: (\d+)", home_src)[0]
+            self.token = re.findall(r"TOKEN: '(.+)'", home_src)[0]
         except:
             raise(Exception("Unable to find constants for AJAX requests"))
 
@@ -76,6 +77,34 @@ class DropboxConnection:
         # Submit the form with the file
         self.browser.submit()
         
+    def get_dir_list(self,remote_dir):
+        """ Get file info for a directory """
+        
+        if(not self.is_logged_in()):
+            raise(Exception("Can't download when not logged in"))
+            
+        req_vars = "ns_id="+self.root_ns+"&referrer=&t="+self.token
+        
+        req = urllib2.Request('https://www.dropbox.com/browse'+remote_dir,data=req_vars)
+        req.add_header('Referer', 'https://www.dropbox.com/home'+remote_dir)
+        
+        dir_info = json.loads(self.browser.open(req).read())
+        
+        dir_list = {}
+        
+        for item in dir_info['file_info']:
+            # Eliminate directories
+            if(item[0] == False):
+                # get local filename
+                absolute_filename = item[3]
+                local_filename = re.findall(r".*\/(.*)", absolute_filename)[0]
+                
+                # get file URL and add it to the dictionary
+                file_url = item[8]
+                dir_list[local_filename] = file_url
+                
+        return dir_list
+                
     def is_logged_in(self):
         """ Checks if a login has been established """
         if(self.browser):
