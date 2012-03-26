@@ -1,16 +1,20 @@
-from dbupload import upload_file
+from dbupload import DropboxConnection
 from getpass import getpass
 
 email = raw_input("Enter Dropbox email address:")
 password = getpass("Enter Dropbox password:")
 
-# create test file
+# Create a little test file
 fh = open("small_test_file.txt","w")
 fh.write("Small test file")
 fh.close()
-    
+
 try:
-    upload_file("small_test_file.txt","/","small_test_file.txt",email,password)
+    # Create the connection
+    conn = DropboxConnection(email, password)
+    
+    # Upload the file
+    conn.upload_file("small_test_file.txt","/","small_test_file.txt")
 except:
     print("Upload failed")
 else:
