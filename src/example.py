@@ -4,6 +4,14 @@ from getpass import getpass
 email = raw_input("Enter Dropbox email address:")
 password = getpass("Enter Dropbox password:")
 
-upload_file("example.py","/","dbupload_test.txt",email,password)
-
-print("Uploaded dbupload_test.txt to the root of your Dropbox")
+# create test file
+fh = open("small_test_file.txt","w")
+fh.write("Small test file")
+fh.close()
+    
+try:
+    upload_file("small_test_file.txt","/","small_test_file.txt",email,password)
+except:
+    print("Upload failed")
+else:
+    print("Uploaded small_test_file.txt to the root of your Dropbox")
