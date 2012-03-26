@@ -15,7 +15,7 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
     try:
         br.select_form(predicate=isLoginForm)
     except:
-        print("Unable to find login form.")
+        raise(Exception('Unable to find login form'))
     
     br['login_email'] = email
     br['login_password'] = password
@@ -29,8 +29,7 @@ def upload_file(local_file,remote_dir,remote_file,email,password):
     try:
         br.select_form(predicate=isUploadForm)
     except:
-        print("Unable to find upload form.")
-        print("Make sure that your login information is correct.")
+        raise(Exception('Unable to find upload form'))
         
     br.form.find_control("dest").readonly = False
     br.form.set_value(remote_dir,"dest")
