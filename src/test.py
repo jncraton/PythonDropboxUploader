@@ -3,6 +3,7 @@ from getpass import getpass
 import unittest
 import mechanize
 
+# This won't function until these variables are set to valid credentials
 email = ""
 password = ""
 
