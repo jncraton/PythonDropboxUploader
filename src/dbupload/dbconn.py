@@ -24,6 +24,7 @@ class DropboxConnection:
         
         # Fire up a browser using mechanize
         self.browser = mechanize.Browser()
+        self.browser.set_handle_robots(False)
         
         # Browse to the login page
         self.browser.open('https://www.dropbox.com/login')
