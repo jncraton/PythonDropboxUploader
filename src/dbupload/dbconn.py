@@ -51,7 +51,7 @@ class DropboxConnection:
         
         try:
             self.root_ns = re.findall(r"root_ns: (\d+)", home_src)[0]
-            self.token = re.findall(r"TOKEN: '(.+?)'", home_src)[0].decode('string_escape')
+            self.token = re.findall(r"TOKEN: ['\"](.+?)['\"]", home_src)[0].decode('string_escape')
             
         except:
             raise(Exception("Unable to find constants for AJAX requests"))
