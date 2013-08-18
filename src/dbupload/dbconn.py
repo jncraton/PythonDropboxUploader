@@ -95,14 +95,13 @@ class DropboxConnection:
         dir_list = {}
         
         for item in dir_info['file_info']:
-            # Eliminate directories
-            if(item[0] == False):
+            if(item['is_dir'] == False):
                 # get local filename
-                absolute_filename = item[3]
+                absolute_filename = item['ns_path']
                 local_filename = re.findall(r".*\/(.*)", absolute_filename)[0]
                 
                 # get file URL and add it to the dictionary
-                file_url = item[8]
+                file_url = item['href']
                 dir_list[local_filename] = file_url
                 
         return dir_list
