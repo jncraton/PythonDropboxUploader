@@ -31,7 +31,7 @@ class TestSequenceFunctions(unittest.TestCase):
         
     def test_dir_list(self):
         conn = DropboxConnection(email, password)
-        conn.get_dir_list("/Archives")
+        conn.get_dir_list("/")
     
     def test_download(self):
         conn = DropboxConnection(email, password)
