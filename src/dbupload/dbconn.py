@@ -110,13 +110,18 @@ class DropboxConnection:
         """ Get the URL to download a file """
         
         return self.get_dir_list(remote_dir)[remote_file]
-
+        
+    def download_file_from_url(self, url, local_file):
+        """ Store file locally from download URL """
+        
+        fh = open(local_file, "wb")
+        fh.write(self.browser.open(url).read())
+        fh.close()
+        
     def download_file(self, remote_dir, remote_file, local_file):
         """ Download a file and save it locally """
         
-        fh = open(local_file, "wb")
-        fh.write(self.browser.open(self.get_download_url(remote_dir,remote_file)).read())
-        fh.close()
+        self.download_file_from_url(self.get_download_url(remote_dir,remote_file), local_file)
     
     def is_logged_in(self):
         """ Checks if a login has been established """
