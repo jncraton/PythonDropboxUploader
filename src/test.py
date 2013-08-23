@@ -38,8 +38,11 @@ class TestSequenceFunctions(unittest.TestCase):
         conn.download_file("/","small_test_file.txt","small_test_file.txt")
         
 if __name__ == '__main__':
-    if email == '' or password == '':
-        print("You need to add your account credentials to test.py")
-    else:
-        suite = unittest.TestLoader().loadTestsFromTestCase(TestSequenceFunctions)
-        unittest.TextTestRunner(verbosity=2).run(suite)
+    if email == '':
+        email = raw_input('Dropbox account email:')
+
+    if password == '':
+        password = getpass('Dropbox password:')
+
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestSequenceFunctions)
+    unittest.TextTestRunner(verbosity=2).run(suite)
