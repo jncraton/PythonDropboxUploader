@@ -19,6 +19,13 @@ conn.upload_file("local_file.txt","/remote/path/","remote_file.txt")
 from dbupload import DropboxConnection
 
 conn = DropboxConnection("email@example.com", "password")
-conn.upload_file("local_file.txt","/remote/path/","remote_file.txt")
 print(conn.get_dir_list('/remote/path'))
 ```
+
+## Downloading a file
+
+```python
+from dbupload import DropboxConnection
+
+conn = DropboxConnection("email@example.com", "password")
+conn.download_file("/remote/path","remote_file.txt","local_file.txt")
