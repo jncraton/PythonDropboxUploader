@@ -38,10 +38,8 @@ from dbupload import DropboxConnection
 
 conn = DropboxConnection("email@example.com", "password")
 
-files = conn.get_dir_list('/remote/path')
+urls = conn.get_dir_list('/remote/path')
 
-for filename in files:
-    url = files[filename]
-    
-    conn.download_file_from_url(url, filename)
+for filename in urls:
+    conn.download_file_from_url(urls[filename], filename)
 ```
