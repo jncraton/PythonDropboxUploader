@@ -29,6 +29,7 @@ from dbupload import DropboxConnection
 
 conn = DropboxConnection("email@example.com", "password")
 conn.download_file("/remote/path","remote_file.txt","local_file.txt")
+```
 
 ## Download all files in a directory
 
