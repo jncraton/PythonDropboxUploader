@@ -40,8 +40,8 @@ conn = DropboxConnection("email@example.com", "password")
 
 files = conn.get_dir_list('/remote/path')
 
-for file in files:
-    url = files[file]
+for filename in files:
+    url = files[filename]
     
-    conn.download_file_from_url(url, file)
+    conn.download_file_from_url(url, filename)
 ```
