@@ -50,8 +50,8 @@ class DropboxConnection:
         home_src = self.browser.open('https://www.dropbox.com/home').read()
         
         try:
-            self.root_ns = re.findall(r"root_ns: (\d+)", home_src)[0]
-            self.token = re.findall(r"TOKEN: ['\"](.+?)['\"]", home_src)[0].decode('string_escape')
+            self.root_ns = re.findall(r"\"root_ns\": (\d+)", home_src)[0]
+            self.token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", home_src)[0].decode('string_escape')
             
         except:
             raise(Exception("Unable to find constants for AJAX requests"))
