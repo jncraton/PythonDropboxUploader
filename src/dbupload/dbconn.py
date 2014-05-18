@@ -17,7 +17,6 @@ class DropboxConnection:
         self.password = password
         
         self.login()
-        self.get_constants()
 
     def login(self):
         """ Login to Dropbox and return mechanize browser instance """
@@ -37,26 +36,25 @@ class DropboxConnection:
         except:
             self.browser = None
             raise(Exception('Unable to find login form'))
-		
-        token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", login_src)[0].decode('string_escape')
+        
+        self.get_constants(login_src)
+        
         self.browser.form.new_control('text', 't', {'value':''})
         self.browser.form.fixup()
         
         self.browser['login_email'] = self.email
         self.browser['login_password'] = self.password
-        self.browser['t'] = token
+        self.browser['t'] = self.token
         
         # Send the form
         response = self.browser.submit()
         
-    def get_constants(self):
+    def get_constants(self, src):
         """ Load constants from page """
         
-        home_src = self.browser.open('https://www.dropbox.com/home').read()
-        
         try:
-            self.root_ns = re.findall(r"\"root_ns\": (\d+)", home_src)[0]
-            self.token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", home_src)[0].decode('string_escape')
+            self.root_ns = re.findall(r"\"root_ns\": (\d+)", src)[0]
+            self.token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", src)[0].decode('string_escape')
             
         except:
             raise(Exception("Unable to find constants for AJAX requests"))
