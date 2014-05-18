@@ -27,19 +27,24 @@ class DropboxConnection:
         self.browser.set_handle_robots(False)
         
         # Browse to the login page
-        self.browser.open('https://www.dropbox.com/login')
+        login_src = self.browser.open('https://www.dropbox.com/login').read()
         
         # Enter the username and password into the login form
-        isLoginForm = lambda l: l.action == "https://www.dropbox.com/login" and l.method == "POST"
+        isLoginForm = lambda l: l.action == "https://www.dropbox.com/ajax_login" and l.method == "POST"
         
         try:
             self.browser.select_form(predicate=isLoginForm)
         except:
             self.browser = None
             raise(Exception('Unable to find login form'))
+		
+        token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", login_src)[0].decode('string_escape')
+        self.browser.form.new_control('text', 't', {'value':''})
+        self.browser.form.fixup()
         
         self.browser['login_email'] = self.email
         self.browser['login_password'] = self.password
+        self.browser['t'] = token
         
         # Send the form
         response = self.browser.submit()
