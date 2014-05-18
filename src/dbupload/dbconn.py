@@ -10,6 +10,8 @@ class DropboxConnection:
     password = ""
     root_ns = ""
     token = ""
+    uid = ""
+    request_id = ""
     browser = None
     
     def __init__(self,email,password):
@@ -59,6 +61,22 @@ class DropboxConnection:
         except:
             raise(Exception("Unable to find constants for AJAX requests"))
 
+    def refresh_constants(self):
+        """ Update constants from page """
+        
+        src = self.browser.open('https://www.dropbox.com/home').read()
+        
+        try:
+            self.root_ns = re.findall(r"\"root_ns\": (\d+)", src)[0]
+            self.token = re.findall(r"\"TOKEN\": ['\"](.+?)['\"]", src)[0].decode('string_escape')
+            self.uid = re.findall(r"\"id\": (\d+)", src)[0]
+            self.request_id = re.findall(r"\"REQUEST_ID\": ['\"]([a-z0-9]+)['\"]", src)[0]
+            
+        except:
+            raise(Exception("Unable to find constants for AJAX requests"))
+
+    
+
     def upload_file(self,local_file,remote_dir,remote_file):
         """ Upload a local file to Dropbox """
         
@@ -85,12 +103,14 @@ class DropboxConnection:
     def get_dir_list(self,remote_dir):
         """ Get file info for a directory """
         
+        self.refresh_constants()
+        
         if(not self.is_logged_in()):
             raise(Exception("Can't download when not logged in"))
             
-        req_vars = "ns_id="+self.root_ns+"&referrer=&t="+self.token
+        req_vars = "ns_id="+self.root_ns+"&referrer=&t="+self.token+"&is_xhr=true"+"&parent_request_id="+self.request_id
         
-        req = urllib2.Request('https://www.dropbox.com/browse'+remote_dir,data=req_vars)
+        req = urllib2.Request('https://www.dropbox.com/browse'+remote_dir+'?_subject_uid='+self.uid,data=req_vars)
         req.add_header('Referer', 'https://www.dropbox.com/home'+remote_dir)
         
         dir_info = json.loads(self.browser.open(req).read())
