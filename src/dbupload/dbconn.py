@@ -31,7 +31,7 @@ class DropboxConnection:
         login_src = self.browser.open('https://www.dropbox.com/login').read()
         
         # Enter the username and password into the login form
-        isLoginForm = lambda l: l.action == "https://www.dropbox.com/ajax_captcha_login" and l.method == "POST"
+        isLoginForm = lambda l: (l.action == "https://www.dropbox.com/ajax_captcha_login" or l.action == "https://www.dropbox.com/ajax_login") and l.method == "POST"
         
         try:
             self.browser.select_form(predicate=isLoginForm)
