@@ -2,6 +2,7 @@ import mechanize
 import urllib2
 import re
 import json
+import time
 
 class DropboxConnection:
     """ Creates a connection to Dropbox """
@@ -92,9 +93,11 @@ class DropboxConnection:
             self.browser.select_form(predicate=isUploadForm)
         except:
             raise(Exception('Unable to find upload form'))
-            
+
         self.browser.form.find_control("dest").readonly = False
         self.browser.form.set_value(remote_dir,"dest")
+        self.browser.form.find_control("mtime_utc").readonly = False
+        self.browser.form.set_value(str(int(time.time())), "mtime_utc")
         self.browser.form.add_file(open(local_file,"rb"),"",remote_file)
         
         # Submit the form with the file
