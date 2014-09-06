@@ -7,12 +7,10 @@ from getpass import getpass
 import unittest
 import mechanize
 
-# This won't function until these variables are set to valid credentials
 email = ""
 password = ""
 
 class TestSequenceFunctions(unittest.TestCase):
-
     def setUp(self):
         fh = open("small_test_file.txt","w")
         fh.write("Small test file")
