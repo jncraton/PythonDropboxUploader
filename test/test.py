@@ -16,26 +16,26 @@ class TestSequenceFunctions(unittest.TestCase):
         fh.write("Small test file")
         fh.close()
         
-    def test_login(self):
+    def test1_login(self):
         conn = DropboxConnection(email, password)
         
         self.assertTrue(conn.is_logged_in())
     
-    def test_bad_login(self):
+    def test2_bad_login(self):
         try:
             conn = DropboxConnection("bad email", "bad password")
         except:
             self.assertRaises(Exception)
     
-    def test_upload_small(self):
+    def test3_upload_small(self):
         conn = DropboxConnection(email, password)
         conn.upload_file("small_test_file.txt","/","small_test_file.txt")
         
-    def test_dir_list(self):
+    def test4_dir_list(self):
         conn = DropboxConnection(email, password)
         conn.get_dir_list("/")
     
-    def test_download(self):
+    def test5_download(self):
         conn = DropboxConnection(email, password)
         conn.download_file("/","small_test_file.txt","small_test_file.txt")
         
