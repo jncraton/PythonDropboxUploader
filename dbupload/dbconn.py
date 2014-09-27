@@ -15,10 +15,33 @@ class DropboxConnection:
     request_id = ""
     browser = None
     
+    def monkeypatch_mechanize(self):
+        """Work-around for a mechanize 0.2.5 bug. See: https://github.com/jjlee/mechanize/pull/58"""
+        import mechanize
+        if mechanize.__version__ < (0, 2, 6):
+            from mechanize._form import SubmitControl, ScalarControl
+
+            def __init__(self, type, name, attrs, index=None):
+                ScalarControl.__init__(self, type, name, attrs, index)
+                # IE5 defaults SUBMIT value to "Submit Query"; Firebird 0.6 leaves it
+                # blank, Konqueror 3.1 defaults to "Submit".  HTML spec. doesn't seem
+                # to define this.
+                if self.value is None:
+                    if self.disabled:
+                        self.disabled = False
+                        self.value = ""
+                        self.disabled = True
+                    else:
+                        self.value = ""
+                self.readonly = True
+
+            SubmitControl.__init__ = __init__
+
     def __init__(self,email,password):
         self.email = email
         self.password = password
         
+        self.monkeypatch_mechanize()
         self.login()
 
     def login(self):
@@ -33,7 +56,7 @@ class DropboxConnection:
         
         # Enter the username and password into the login form
         isLoginForm = lambda l: (l.action == "https://www.dropbox.com/ajax_captcha_login" or l.action == "https://www.dropbox.com/ajax_login") and l.method == "POST"
-        
+
         try:
             self.browser.select_form(predicate=isLoginForm)
         except:
