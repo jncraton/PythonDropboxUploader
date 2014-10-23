@@ -123,9 +123,7 @@ class DropboxConnection:
         self.browser.form.set_value(str(int(time.time())), "mtime_utc")
         with open(local_file,"rb") as f:
             self.browser.form.add_file(f,"",remote_file)
-            # Submit the form with the file
             self.browser.submit()
-        f.close()
         
     def get_dir_list(self,remote_dir):
         """ Get file info for a directory """
