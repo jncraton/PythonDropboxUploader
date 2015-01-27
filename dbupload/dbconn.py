@@ -173,11 +173,7 @@ class DropboxConnection:
 
         share_info = json.loads(self.browser.open(req).read())
 
-        import pprint
-        pprint.pprint(share_info)
-
         html = share_info['actions'][0][1]
-        print html
 
         fname = html.split('"https://www.dropbox.com/s/')[1].split('?dl=0')[0]
         return 'https://www.dropbox.com/s/' + fname
