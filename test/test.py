@@ -39,6 +39,10 @@ class TestSequenceFunctions(unittest.TestCase):
         conn = DropboxConnection(email, password)
         conn.download_file("/","small_test_file.txt","small_test_file.txt")
         
+    def test6_get_public_url(self):
+        conn = DropboxConnection(email, password)
+        conn.get_public_url("/","small_test_file.txt")
+        
 if __name__ == '__main__':
     if email == '':
         email = raw_input('Dropbox account email:')
