@@ -158,7 +158,36 @@ class DropboxConnection:
         """ Get the URL to download a file """
         
         return self.get_dir_list(remote_dir)[remote_file]
-        
+
+    def get_public_url(self, remote_dir, remote_file):
+        """ Share file and get the URL to view it publicly """
+
+        self.refresh_constants()
+
+        if(not self.is_logged_in()):
+            raise(Exception("Can't download when not logged in"))
+
+        req_vars = "origin=browse_file_row&t="+self.token+"&is_xhr=true&_subject_uid="+self.uid
+        req = urllib2.Request('https://www.dropbox.com/sm/share_link/'+remote_dir+remote_file,data=req_vars)
+        req.add_header('Referer', 'https://www.dropbox.com/home'+remote_dir)
+
+        share_info = json.loads(self.browser.open(req).read())
+
+        import pprint
+        pprint.pprint(share_info)
+
+        html = share_info['actions'][0][1]
+        print html
+
+        fname = html.split('"https://www.dropbox.com/s/')[1].split('?dl=0')[0]
+        return 'https://www.dropbox.com/s/' + fname
+
+    def get_public_download_url(self, remote_dir, remote_file):
+        """ Share file and get the URL to download it publicly """
+
+        share = self.get_public_url(remote_dir, remote_file)
+        return share + '?dl=1'
+
     def download_file_from_url(self, url, local_file):
         """ Store file locally from download URL """
         
