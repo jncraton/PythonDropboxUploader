@@ -195,6 +195,28 @@ class DropboxConnection:
         """ Download a file and save it locally """
         
         self.download_file_from_url(self.get_download_url(remote_dir,remote_file), local_file)
+
+    def delete_file(self, remote_dir, remote_file=None):
+        """ Delete a file"""
+        self.refresh_constants()
+
+        if (not self.is_logged_in()):
+            raise (Exception("Can't download when not logged in"))
+
+        req_vars = "files="+remote_dir + (remote_file if remote_file else "") + \
+                   "&t=" + self.token + "&is_xhr=true" + "&parent_request_id=" + self.request_id
+
+        req = urllib2.Request('https://www.dropbox.com/cmd/delete?long_running=1&_subject_uid=' + self.uid,
+                              data=req_vars)
+
+        req.add_header('Referer', 'https://www.dropbox.com/home' +
+                       (remote_dir if remote_file else re.match('(\w*/)*', remote_dir).group(0)[0:-1]))
+
+        self.browser.open(req)
+
+    def delete_dir(self, remote_dir):
+        """ Delete a directory """
+        self.delete_file(remote_dir)
     
     def is_logged_in(self):
         """ Checks if a login has been established """
