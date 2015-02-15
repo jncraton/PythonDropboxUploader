@@ -42,6 +42,10 @@ class TestSequenceFunctions(unittest.TestCase):
     def test6_get_public_url(self):
         conn = DropboxConnection(email, password)
         conn.get_public_url("/","small_test_file.txt")
+
+    def test7_delete_file(self):
+        conn = DropboxConnection(email, password)
+        conn.delete_file("/","small_test_file.txt")
         
 if __name__ == '__main__':
     if email == '':

@@ -43,3 +43,23 @@ urls = conn.get_dir_list('/remote/path')
 for filename in urls:
     conn.download_file_from_url(urls[filename], filename)
 ```
+
+## Delete a file in a directory
+
+```python
+from dbupload import DropboxConnection
+
+conn = DropboxConnection("email@example.com", "password")
+
+urls = conn.delete_file('/remote/path', 'remote_file.txt')
+```
+
+## Delete a directory
+
+```python
+from dbupload import DropboxConnection
+
+conn = DropboxConnection("email@example.com", "password")
+
+urls = conn.delete_dir('/remote/path/dir_to_del')
+```
