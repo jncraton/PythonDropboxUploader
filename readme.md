@@ -1,3 +1,15 @@
+# This is an outdated, unmaintained project
+
+This project used to interact with Dropbox using its website. This is hacky, hard to maintain, and is no longer fully possibly as Dropbox sometimes serves CAPTCHAs on certain requests. Dropbox has had a complete Python API for a long time now. I'd recommend using that instead:
+
+https://www.dropbox.com/developers/documentation/python
+
+If you just want something that can quickly let you use Dropbox from a terminal, I'd recommend rclone:
+
+https://rclone.org/
+
+-----
+
 # PythonDropboxUploader (dbupload)
 
 A very small Python package which provides a function to easily maniupulate files stored on Dropbox. This does not use the official API and should probably not be used on any kind of production system.
